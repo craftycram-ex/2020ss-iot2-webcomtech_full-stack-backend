@@ -1,0 +1,12 @@
+API-Info:
+Name: HfG Gmünd Mensa API
+Stakeholder: Studenten & Dozenten
+Use-Cases:
+- Informieren über die Tagesmenüs in der Mensa vor Beginn der Pause
+- Abrufen der Mensapläne
+Technologie:
+Abrufen der JSON Daten von einem Server des Studierendenwerks bei Anfrage. 
+Filtern der Daten nach Wochentag
+Geringe Datenmenge
+Endpoints:
+- Wochentag-Abfrage (./day/{[mon, tue, wed, thu, fri]})
