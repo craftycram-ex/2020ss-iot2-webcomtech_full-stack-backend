@@ -1,4 +1,9 @@
+// Imports
 const axios = require('axios').default;
+const express = require('express');
+
+// Library inits
+const app = express();
 
 axios({
   method: 'get',
@@ -7,5 +12,18 @@ axios({
 })
   .then((response) => {
     const output = response.data;
+    // eslint-disable-next-line no-console
     console.log(output);
   });
+
+
+// Params - REST-artig
+app.get('/user/:uid', (req, res) => {
+  res.send(`User ID is set to ${req.params.uid}`);
+  // tu was
+});
+// Server starten
+app.listen(3000, () => {
+  // eslint-disable-next-line no-console
+  console.log('Example app listening on port 3000!');
+});
