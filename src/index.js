@@ -12,9 +12,11 @@ async function getData() {
   await axios.get(uri)
     .then((response) => {
       data = response.data;
+    })
+    .catch(() => {
+      data = undefined;
     });
 }
-
 getData();
 
 // Params - REST-artig
@@ -28,7 +30,7 @@ app.get('/mensa/:day', (req, res) => {
     if (req.params.day === 'Di') {
       res.send(data);
     } else {
-      res.status(404).send('404');
+      res.status(404).send('Error: 404');
     }
   } else {
     res.status(404).send('Error: 404');
