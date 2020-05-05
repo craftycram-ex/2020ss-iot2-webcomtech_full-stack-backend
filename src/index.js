@@ -10,10 +10,7 @@ const uri = 'https://gist.githubusercontent.com/fg-uulm/666847dd7f11607fc2b6234c
 
 axios.get(uri)
   .then((response) => {
-    const output = response.data;
-    // eslint-disable-next-line no-console
-    console.log(output);
-    data = output;
+    data = response.data;
   });
 
 
