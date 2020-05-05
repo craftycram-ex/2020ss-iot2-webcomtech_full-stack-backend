@@ -31,6 +31,16 @@ app.get('/mensa/:day', (req, res) => {
   }
 });
 
+app.post('/api/addData/', (req, res) => {
+  // data = JSON.parse(data);
+  data.api = req.data;
+  res.status(200).send();
+});
+
+app.get('/api/getData/', (req, res) => {
+  res.status(200).send(data);
+});
+
 // Server starten
 app.listen(3000, () => {
   // eslint-disable-next-line no-console
