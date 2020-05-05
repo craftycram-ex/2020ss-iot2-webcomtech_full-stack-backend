@@ -6,12 +6,9 @@ const express = require('express');
 const app = express();
 
 let data = '';
+const uri = 'https://gist.githubusercontent.com/fg-uulm/666847dd7f11607fc2b6234c6d84d188/raw/2ca994ada633143903b10b2bf7ada3fd039cae35/mensa.json';
 
-axios({
-  method: 'get',
-  url: 'https://gist.githubusercontent.com/fg-uulm/666847dd7f11607fc2b6234c6d84d188/raw/2ca994ada633143903b10b2bf7ada3fd039cae35/mensa.json',
-  responseType: 'json',
-})
+axios.get(uri)
   .then((response) => {
     const output = response.data;
     // eslint-disable-next-line no-console
