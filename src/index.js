@@ -19,12 +19,6 @@ async function getData() {
 }
 getData();
 
-// Params - REST-artig
-app.get('/user/:uid', (req, res) => {
-  res.send(`User ID is set to ${req.params.uid}`);
-  // tu was
-});
-
 app.get('/mensa/:day', (req, res) => {
   if (data !== undefined) {
     if (req.params.day === 'Di') {
@@ -35,7 +29,6 @@ app.get('/mensa/:day', (req, res) => {
   } else {
     res.status(404).send('Error: 404');
   }
-  // tu was
 });
 
 // Server starten
