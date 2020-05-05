@@ -8,11 +8,14 @@ const app = express();
 let data = '';
 const uri = 'https://gist.githubusercontent.com/fg-uulm/666847dd7f11607fc2b6234c6d84d188/raw/2ca994ada633143903b10b2bf7ada3fd039cae35/mensa.json';
 
-axios.get(uri)
-  .then((response) => {
-    data = response.data;
-  });
+async function getData() {
+  await axios.get(uri)
+    .then((response) => {
+      data = response.data;
+    });
+}
 
+getData();
 
 // Params - REST-artig
 app.get('/user/:uid', (req, res) => {
@@ -21,10 +24,14 @@ app.get('/user/:uid', (req, res) => {
 });
 
 app.get('/mensa/:day', (req, res) => {
-  if (req.params.day === 'Di') {
-    res.send(data);
+  if (data !== undefined) {
+    if (req.params.day === 'Di') {
+      res.send(data);
+    } else {
+      res.status(404).send('404');
+    }
   } else {
-    res.status(404).send('404');
+    res.status(404).send('Error: 404');
   }
   // tu was
 });
