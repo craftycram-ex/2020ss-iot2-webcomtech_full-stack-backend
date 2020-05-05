@@ -10,8 +10,8 @@ const uri = 'https://gist.githubusercontent.com/fg-uulm/666847dd7f11607fc2b6234c
 
 async function getData() {
   await axios.get(uri)
-    .then((response) => {
-      data = response.data;
+    .then((req) => {
+      data = req.data;
     })
     .catch(() => {
       data = undefined;
@@ -32,8 +32,8 @@ app.get('/mensa/:day', (req, res) => {
 });
 
 app.post('/api/addData/', (req, res) => {
-  // data = JSON.parse(data);
-  data.api = req.data;
+  data.push(req.body);
+  console.log(req.body);
   res.status(200).send();
 });
 
