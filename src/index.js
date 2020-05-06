@@ -22,10 +22,13 @@ getData();
 
 app.get('/mensa/:day', (req, res) => {
   if (data !== undefined) {
-    if (req.params.day === 'Di') {
-      res.send(data);
-    } else {
-      res.status(404).send('Error: 404');
+    switch (req.params.day) {
+      case 'Di':
+        res.send(data);
+        break;
+      default:
+        res.status(404).send('Error: 404');
+        break;
     }
   } else {
     res.status(404).send('Error: 404');
