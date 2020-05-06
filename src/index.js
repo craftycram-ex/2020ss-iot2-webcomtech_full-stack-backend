@@ -4,6 +4,7 @@ const express = require('express');
 
 // Library inits
 const app = express();
+app.use(express.json());
 
 let data = '';
 const uri = 'https://gist.githubusercontent.com/fg-uulm/666847dd7f11607fc2b6234c6d84d188/raw/2ca994ada633143903b10b2bf7ada3fd039cae35/mensa.json';
@@ -33,7 +34,6 @@ app.get('/mensa/:day', (req, res) => {
 
 app.post('/api/addData/', (req, res) => {
   data.push(req.body);
-  console.log(req.body);
   res.status(200).send();
 });
 
