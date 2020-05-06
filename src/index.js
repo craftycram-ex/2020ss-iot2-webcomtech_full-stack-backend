@@ -33,8 +33,12 @@ app.get('/mensa/:day', (req, res) => {
 });
 
 app.post('/api/addData/', (req, res) => {
-  data.push(req.body);
-  res.status(200).send();
+  if (!JSON.stringify(data).includes(JSON.stringify(req.body))) {
+    data.push(req.body);
+    res.status(200).send();
+  } else {
+    res.status(418).send();
+  }
 });
 
 app.get('/api/getData/', (req, res) => {
