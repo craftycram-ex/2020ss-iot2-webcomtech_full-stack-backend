@@ -24,16 +24,25 @@ getData();
 
 app.get('/mensa/:day', (req, res) => {
   if (data !== undefined) {
-    switch (req.params.day) {
-      case 'Di':
-        res.send(data);
-        break;
-      default:
-        res.status(404).send('Error: 404');
-        break;
+    const dayData = data.filter((essen) => essen.day === req.params.day);
+    if (dayData.length !== 0) {
+      res.send(dayData);
+    } else {
+      res.status(404).send('Error: 404');
     }
   } else {
     res.status(404).send('Error: 404');
+  }
+});
+
+app.post('/mensa/:day', (req, res) => {
+  const searchData = data.fontsize((essen) => essen.category === req.body.category
+    && essen.day === req.body.day);
+  if (searchData === undefined) {
+    data.push(req.body);
+    res.status(200).send();
+  } else {
+    res.status(418).send();
   }
 });
 
