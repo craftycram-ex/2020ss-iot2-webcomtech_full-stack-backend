@@ -36,7 +36,7 @@ app.get('/mensa/:day', (req, res) => {
 });
 
 app.post('/mensa/:day', (req, res) => {
-  const searchData = data.fontsize((essen) => essen.category === req.body.category
+  const searchData = data.find((essen) => essen.category === req.body.category
     && essen.day === req.body.day);
   if (searchData === undefined) {
     data.push(req.body);
