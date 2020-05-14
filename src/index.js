@@ -1,6 +1,7 @@
 // Imports
 const axios = require('axios').default;
 const express = require('express');
+const mongo = require('mongodb');
 const cors = require('cors');
 
 // Library inits
@@ -8,9 +9,20 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// mongodb client init
+async function initMongoDB() {
+  const client = await mongo.connect('mongodb://localhost:27017/mensa')
+    // eslint-disable-next-line no-console
+    .catch((err) => { console.log(err); });
+  const db = await client.db();
+}
+initMongoDB();
+
+// variable inits
 let data = '';
 const uri = 'https://gist.githubusercontent.com/fg-uulm/666847dd7f11607fc2b6234c6d84d188/raw/2ca994ada633143903b10b2bf7ada3fd039cae35/mensa.json';
 
+// download data
 async function getData() {
   await axios.get(uri)
     .then((req) => {
@@ -22,6 +34,7 @@ async function getData() {
 }
 getData();
 
+// webserver endpoints
 app.get('/mensa/:day', (req, res) => {
   if (data !== undefined) {
     const dayData = data.filter((essen) => essen.day === req.params.day);
