@@ -17,11 +17,14 @@ async function initMongoDB() {
   const db = await client.db();
   return db;
 }
-initMongoDB();
 
 async function addToDatabase(data) {
   const db = await initMongoDB();
-  const insertresult = await db.collection('essen').insertOne(data);
+  const insertresult = await db.collection('essen').insertOne(data, (err) => {
+    if (err) throw err;
+    // eslint-disable-next-line no-console
+    console.log('Added one document');
+  });
   return insertresult;
 }
 
@@ -33,9 +36,25 @@ const uri = 'https://gist.githubusercontent.com/fg-uulm/666847dd7f11607fc2b6234c
 async function getData() {
   await axios.get(uri)
     .then((req) => {
-      req.data.array.forEach((essen) => {
-        addToDatabase(essen);
-      });
+      if (Array.isArray(req.data)) {
+        // eslint-disable-next-line no-console
+        console.log('###############################################################################');
+        // eslint-disable-next-line no-console
+        console.log('#                                                                             #');
+        // eslint-disable-next-line no-console
+        console.log('#   [WARNING]: Downloaded data is currently not saved in database!            #');
+        // eslint-disable-next-line no-console
+        console.log('#   [WARNING]: Reason: Feature WIP - saving storage until feature complete.   #');
+        // eslint-disable-next-line no-console
+        console.log('#                                                                             #');
+        // eslint-disable-next-line no-console
+        console.log('###############################################################################');
+        /*
+        req.data.forEach(async (essen) => {
+          await addToDatabase(essen);
+        });
+        */
+      }
     })
     .catch(() => {
       data = undefined;
@@ -58,14 +77,20 @@ app.get('/mensa/:day', (req, res) => {
 });
 
 app.post('/mensa/:day', (req, res) => {
-  const searchData = data.find((essen) => essen.category === req.body.category
-    && essen.day === req.body.day);
-  if (searchData === undefined) {
-    data.push(req.body);
+  if (Array.isArray(req.body)) {
+    const dbResult = Object.keys(req.body).forEach(async (essen) => {
+      await addToDatabase(req.body[essen]);
+      // eslint-disable-next-line no-console
+      console.log(dbResult);
+    });
+  }
+  res.status(200).send();
+  /*
+  if (dbResult !== undefined) {
     res.status(200).send();
   } else {
     res.status(418).send();
-  }
+  } */
 });
 
 app.post('/api/addData/', (req, res) => {
@@ -86,5 +111,19 @@ app.get('/api/getData/', (req, res) => {
 // Server starten
 app.listen(3000, () => {
   // eslint-disable-next-line no-console
-  console.log('Example app listening on port 3000!');
+  console.log('\n[INFO]: Example app listening on port 3000!\n');
 });
+
+
+// eslint-disable-next-line no-console
+console.log('###############################################################################');
+// eslint-disable-next-line no-console
+console.log('#                                                                             #');
+// eslint-disable-next-line no-console
+console.log('# [WARNING]: There is no independence check implemented yet!                  #');
+// eslint-disable-next-line no-console
+console.log('# [WARNING]: Reason: rewrite of the database storage system now with mongo.   #');
+// eslint-disable-next-line no-console
+console.log('#                                                                             #');
+// eslint-disable-next-line no-console
+console.log('###############################################################################');
