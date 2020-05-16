@@ -15,8 +15,15 @@ async function initMongoDB() {
     // eslint-disable-next-line no-console
     .catch((err) => { console.log(err); });
   const db = await client.db();
+  return db;
 }
 initMongoDB();
+
+async function addToDatabase(data) {
+  const db = await initMongoDB();
+  const insertresult = await db.collection('essen').insertOne(data);
+  return insertresult;
+}
 
 // variable inits
 let data = '';
@@ -26,7 +33,9 @@ const uri = 'https://gist.githubusercontent.com/fg-uulm/666847dd7f11607fc2b6234c
 async function getData() {
   await axios.get(uri)
     .then((req) => {
-      data = req.data;
+      req.data.array.forEach((essen) => {
+        addToDatabase(essen);
+      });
     })
     .catch(() => {
       data = undefined;
