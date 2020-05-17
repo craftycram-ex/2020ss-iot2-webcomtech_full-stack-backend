@@ -55,6 +55,7 @@ async function getData() {
         // eslint-disable-next-line no-console
         console.log('###############################################################################');
         /*
+        // TODO: Database search by keywords / identifiying key before adding data (independence)
         req.data.forEach(async (essen) => {
           await addToDatabase(essen);
         });
@@ -82,6 +83,7 @@ app.get('/mensa/:day', async (req, res) => {
 
 app.post('/mensa/:day', (req, res) => {
   Object.keys(req.body).forEach(async (essen) => {
+  // TODO: Database search by keywords / identifiying key instead of comparing the complete object (independence)
     const searchResults = await getFromDatabase(essen);
     if (searchResults.length === 0) {
       await addToDatabase(req.body[essen]);
@@ -93,6 +95,7 @@ app.post('/mensa/:day', (req, res) => {
 });
 
 app.post('/api/addData/', async (req, res) => {
+  // TODO: reimplement database-force-push endpoint
   res.status(501).send();
   /*
   const searchResults = await getFromDatabase(req.body);
@@ -106,6 +109,7 @@ app.post('/api/addData/', async (req, res) => {
 });
 
 app.get('/api/getData/', (req, res) => {
+  // TODO: reimplement complete database lookup
   res.status(501).send();
   // res.status(200).send(data);
 });
