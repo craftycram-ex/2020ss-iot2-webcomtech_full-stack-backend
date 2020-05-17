@@ -90,12 +90,6 @@ app.post('/mensa/:day', (req, res) => {
       res.status(409).send('Conflict: Double Entry');
     }
   });
-  /*
-  if (dbResult !== undefined) {
-    res.status(200).send();
-  } else {
-    res.status(418).send();
-  } */
 });
 
 app.post('/api/addData/', async (req, res) => {
@@ -112,8 +106,6 @@ app.post('/api/addData/', async (req, res) => {
 });
 
 app.get('/api/getData/', (req, res) => {
-  // eslint-disable-next-line no-console
-  console.log('Access');
   res.status(501).send();
   // res.status(200).send(data);
 });
