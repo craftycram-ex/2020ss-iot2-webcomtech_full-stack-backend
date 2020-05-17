@@ -81,7 +81,7 @@ app.get('/mensa/:day', async (req, res) => {
 });
 
 app.post('/mensa/:day', (req, res) => {
-  const dbResult = Object.keys(req.body).forEach(async (essen) => {
+  Object.keys(req.body).forEach(async (essen) => {
     const searchResults = await getFromDatabase(essen);
     if (searchResults.length === 0) {
       await addToDatabase(req.body[essen]);
@@ -90,8 +90,6 @@ app.post('/mensa/:day', (req, res) => {
       res.status(409).send('Conflict: Double Entry');
     }
   });
-  // eslint-disable-next-line no-console
-  console.log(dbResult);
   /*
   if (dbResult !== undefined) {
     res.status(200).send();
