@@ -17,74 +17,115 @@ async function initMongoDB() {
   const db = await client.db();
   return db;
 }
-initMongoDB();
 
 async function addToDatabase(data) {
   const db = await initMongoDB();
-  const insertresult = await db.collection('essen').insertOne(data);
+  const insertresult = await db.collection('essen').insertOne(data, (err) => {
+    if (err) throw err;
+    // eslint-disable-next-line no-console
+    console.log('Added one document');
+  });
   return insertresult;
 }
 
+async function getFromDatabase(keyword) {
+  const db = await initMongoDB();
+  const getResult = await db.collection('essen').find(keyword).toArray();
+  return getResult;
+}
+
 // variable inits
-let data = '';
 const uri = 'https://gist.githubusercontent.com/fg-uulm/666847dd7f11607fc2b6234c6d84d188/raw/2ca994ada633143903b10b2bf7ada3fd039cae35/mensa.json';
 
 // download data
 async function getData() {
   await axios.get(uri)
     .then((req) => {
-      req.data.array.forEach((essen) => {
-        addToDatabase(essen);
-      });
+      if (Array.isArray(req.data)) {
+        // eslint-disable-next-line no-console
+        console.log('###############################################################################');
+        // eslint-disable-next-line no-console
+        console.log('#                                                                             #');
+        // eslint-disable-next-line no-console
+        console.log('#   [WARNING]: Downloaded data is currently not saved in database!            #');
+        // eslint-disable-next-line no-console
+        console.log('#   [WARNING]: Reason: Feature WIP - saving storage until feature complete.   #');
+        // eslint-disable-next-line no-console
+        console.log('#                                                                             #');
+        // eslint-disable-next-line no-console
+        console.log('###############################################################################');
+        /*
+        req.data.forEach(async (essen) => {
+          await addToDatabase(essen);
+        });
+        */
+      }
     })
-    .catch(() => {
-      data = undefined;
+    .catch((err) => {
+      // eslint-disable-next-line no-console
+      console.log('[ERROR]: Error with downloading data:');
+      // eslint-disable-next-line no-console
+      console.log(`[ERROR]: ${err}`);
     });
 }
 getData();
 
 // webserver endpoints
-app.get('/mensa/:day', (req, res) => {
-  if (data !== undefined) {
-    const dayData = data.filter((essen) => essen.day === req.params.day);
-    if (dayData.length !== 0) {
-      res.send(dayData);
-    } else {
-      res.status(404).send('Error: 404');
-    }
+app.get('/mensa/:day', async (req, res) => {
+  const searchResults = await getFromDatabase({ day: req.params.day });
+  if (searchResults.length > 0) {
+    res.send(searchResults);
   } else {
     res.status(404).send('Error: 404');
   }
 });
 
 app.post('/mensa/:day', (req, res) => {
-  const searchData = data.find((essen) => essen.category === req.body.category
-    && essen.day === req.body.day);
-  if (searchData === undefined) {
-    data.push(req.body);
-    res.status(200).send();
-  } else {
-    res.status(418).send();
-  }
+  Object.keys(req.body).forEach(async (essen) => {
+    const searchResults = await getFromDatabase(essen);
+    if (searchResults.length === 0) {
+      await addToDatabase(req.body[essen]);
+      res.status(200).send();
+    } else {
+      res.status(409).send('Conflict: Double Entry');
+    }
+  });
 });
 
-app.post('/api/addData/', (req, res) => {
-  if (!JSON.stringify(data).includes(JSON.stringify(req.body))) {
-    data.push(req.body);
-    res.status(200).send();
+app.post('/api/addData/', async (req, res) => {
+  res.status(501).send();
+  /*
+  const searchResults = await getFromDatabase(req.body);
+  console.log(req.body);
+  if (searchResults.length > 0) {
+    addToDatabase(req.body.toArray());
   } else {
-    res.status(418).send();
+    res.status(404).send('Error: 404');
   }
+  */
 });
 
 app.get('/api/getData/', (req, res) => {
-  // eslint-disable-next-line no-console
-  console.log('Access');
-  res.status(200).send(data);
+  res.status(501).send();
+  // res.status(200).send(data);
 });
 
 // Server starten
 app.listen(3000, () => {
   // eslint-disable-next-line no-console
-  console.log('Example app listening on port 3000!');
+  console.log('\n[INFO]: Example app listening on port 3000!\n');
 });
+
+
+// eslint-disable-next-line no-console
+console.log('###############################################################################');
+// eslint-disable-next-line no-console
+console.log('#                                                                             #');
+// eslint-disable-next-line no-console
+console.log('# [WARNING]: There is no independence check implemented yet!                  #');
+// eslint-disable-next-line no-console
+console.log('# [WARNING]: Reason: rewrite of the database storage system now with mongo.   #');
+// eslint-disable-next-line no-console
+console.log('#                                                                             #');
+// eslint-disable-next-line no-console
+console.log('###############################################################################');
