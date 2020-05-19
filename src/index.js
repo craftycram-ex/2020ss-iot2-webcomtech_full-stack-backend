@@ -81,17 +81,20 @@ app.get('/mensa/:day', async (req, res) => {
   }
 });
 
-app.post('/mensa/:day', (req, res) => {
-  Object.keys(req.body).forEach(async (essen) => {
-  // TODO: Database search by keywords / identifiying key instead of comparing the complete object (independence)
-    const searchResults = await getFromDatabase(essen);
+app.post('/mensa/:day', async (req, res) => {
+  // TODO: Database search by keywords / identifiying key instead
+  // of comparing the complete object (independence)
+  if (typeof req.body === 'object' && !Array.isArray(req.body)) {
+    const searchResults = await getFromDatabase(req.body);
     if (searchResults.length === 0) {
-      await addToDatabase(req.body[essen]);
+      await addToDatabase(req.body);
       res.status(200).send();
     } else {
       res.status(409).send('Conflict: Double Entry');
     }
-  });
+  } else {
+    res.status(409).send('Conflict: Illegal format (only json object allowed)');
+  }
 });
 
 app.post('/api/addData/', async (req, res) => {
