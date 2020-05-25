@@ -111,10 +111,10 @@ app.post('/api/addData/', async (req, res) => {
   */
 });
 
-app.get('/api/getData/', (req, res) => {
+app.get('/api/getData/', async (req, res) => {
   // TODO: reimplement complete database lookup
-  res.status(501).send();
-  // res.status(200).send(data);
+  // res.status(501).send();
+  res.status(200).send(await getFromDatabase({}));
 });
 
 // Server starten
