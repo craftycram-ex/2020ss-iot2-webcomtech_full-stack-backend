@@ -97,6 +97,11 @@ app.post('/mensa/:day', async (req, res) => {
   }
 });
 
+app.post('/api/vote/', async (req, res) => {
+  console.log(req.body);
+  res.status(200).send();
+});
+
 app.post('/api/addData/', async (req, res) => {
   // TODO: reimplement database-force-push endpoint
   res.status(501).send();
